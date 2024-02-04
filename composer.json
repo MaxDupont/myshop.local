@@ -1,0 +1,9 @@
+{
+  "name": "maksym/my-shop",
+  "autoload": {
+    "psr-4": {
+      "Maksym\\MyShop\\": "src/"
+    }
+  },
+  "require": {}
+}
