@@ -1,41 +1,34 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Maksym\MyShop\Product;
 
-use Maksym\MyShop\RecursiveView\CatalogVisitorInterface;
+use Maksym\MyShop\Element\CatalogElementInterface;
+use Maksym\MyShop\Visitor\CatalogVisitorInterface;
 
-class ProductCategories implements ElementInterface, CategoriesContainerInterface
+class ProductCategories implements CatalogElementInterface
 {
+    public function __construct(
+        private readonly array $elements = [],
+    ) {
+    }
+
+    function acceptHead(CatalogVisitorInterface $catalogVisitor): void
+    {
+        $catalogVisitor->visitProductCategoriesHead($this);
+    }
+
+    function acceptTail(CatalogVisitorInterface $catalogVisitor): void
+    {
+        $catalogVisitor->visitProductCategoriesTail($this);
+    }
+
     /**
-     * @var array<ProductCategory>
+     * @inheritDoc
      */
-    private array $productCategories;
-
-    /**
-     * @param ProductCategory[] $productCategories
-     */
-    public function __construct(array $productCategories = [])
+    public function getElements(): array
     {
-        $this->productCategories = $productCategories;
-    }
-
-    public function toArray(): array
-    {
-        return $this->productCategories;
-    }
-
-    function acceptStart(CatalogVisitorInterface $catalogVisitor): void
-    {
-        $catalogVisitor->visitItemStart($this);
-    }
-
-    function acceptFinish(CatalogVisitorInterface $catalogVisitor): void
-    {
-        $catalogVisitor->visitItemFinish($this);
-    }
-
-    function getCount () : int
-    {
-        return count($this->productCategories);
+        return $this->elements;
     }
 }

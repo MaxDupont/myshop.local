@@ -1,18 +1,18 @@
 <?php
 
 use Maksym\MyShop\Data\DataStorage;
-use Maksym\MyShop\RecursiveView\CatalogRecursiveIterator;
-use Maksym\MyShop\RecursiveView\ErrorHandler;
-use Maksym\MyShop\RecursiveView\ProductCategoryViewer;
+use Maksym\MyShop\Iterator\CatalogRecursiveIterator;
+use Maksym\MyShop\Visitor\ErrorHandler;
+use Maksym\MyShop\Visitor\ProductCategoryViewer;
 
 error_reporting(-1);
 require_once __DIR__ . "/vendor/autoload.php";
 
-$catalog = DataStorage::getData();
+$data = DataStorage::getData();
 
 $errorHandler = new ErrorHandler();
 $catalogViewer = new ProductCategoryViewer();
 
 $recursiveIterator = new CatalogRecursiveIterator();
-$recursiveIterator->goRecursively($catalog, $errorHandler);
-$recursiveIterator->goRecursively($catalog, $catalogViewer);
+$recursiveIterator->go($data, $errorHandler);
+$recursiveIterator->go($data, $catalogViewer);

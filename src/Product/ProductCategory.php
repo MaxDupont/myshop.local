@@ -2,15 +2,15 @@
 
 namespace Maksym\MyShop\Product;
 
-use Maksym\MyShop\RecursiveView\CatalogVisitorInterface;
+use Maksym\MyShop\Visitor\CatalogVisitorInterface;
 
-class ProductCategory implements ElementInterface, CategoriesContainerInterface
+class ProductCategory extends AbstractProductCategoriesContainer
 {
     public function __construct(
-        private readonly int $id,
-        private readonly string $label,
-        private readonly ProductCategories $productCategories = new ProductCategories(),
-        private readonly Products $products = new Products())
+        private readonly int               $id,
+        private readonly string            $label,
+        protected readonly ProductCategories $productCategories = new ProductCategories(),
+    )
     {}
 
     public function getId(): int
@@ -23,33 +23,21 @@ class ProductCategory implements ElementInterface, CategoriesContainerInterface
         return $this->label;
     }
 
-    public function getSubCategories(): ProductCategories
+    function acceptHead(CatalogVisitorInterface $catalogVisitor): void
     {
-        return $this->productCategories;
+        $catalogVisitor->visitProductCategoryHead($this);
+
+        if ($this->categoriesExists()) {
+            $this->productCategories->acceptHead($catalogVisitor);
+        }
     }
 
-    function acceptStart(CatalogVisitorInterface $catalogVisitor): void
+    function acceptTail(CatalogVisitorInterface $catalogVisitor): void
     {
-        $catalogVisitor->visitProductCategory($this);
-    }
+        if ($this->categoriesExists()) {
+            $this->productCategories->acceptTail($catalogVisitor);
+        }
 
-    function acceptFinish(CatalogVisitorInterface $catalogVisitor): void
-    {
-        // TODO: Implement acceptFinish() method.
-    }
-
-    public function getCount() : int
-    {
-        return $this->productCategories->getCount();
-    }
-
-    public function getProducts(): Products
-    {
-        return $this->products;
-    }
-
-    public function toArray(): array
-    {
-        return $this->productCategories->toArray();
+        $catalogVisitor->visitProductCategoryTail($this);
     }
 }
