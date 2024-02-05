@@ -1,27 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Maksym\MyShop\Product;
 
-class Catalog implements CategoriesContainerInterface
+use Maksym\MyShop\Visitor\CatalogVisitorInterface;
+
+class Catalog extends AbstractProductCategoriesContainer
 {
-
-    private ProductCategories $productCategories;
-
-    public function __construct(ProductCategories $productCategories)
-    {
-        $this->productCategories = $productCategories;
+    public function __construct(
+        private readonly string $title,
+        protected readonly ProductCategories $productCategories,
+        private readonly string $description = ''
+    ) {
     }
 
-    public function getProductCategories(): ProductCategories
+    function acceptHead(CatalogVisitorInterface $catalogVisitor): void
     {
-        return $this->productCategories;
+        $catalogVisitor->visitCatalogHead($this);
     }
 
-    /**
-     * @return array<ProductCategory>
-     */
-    public function toArray(): array
+    function acceptTail(CatalogVisitorInterface $catalogVisitor): void
     {
-        return $this->productCategories->toArray();
+        $catalogVisitor->visitCatalogTail($this);
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 }
