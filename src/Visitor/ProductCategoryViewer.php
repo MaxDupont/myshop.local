@@ -3,14 +3,17 @@
 namespace Maksym\MyShop\Visitor;
 
 use Maksym\MyShop\Product\Catalog;
+use Maksym\MyShop\Product\Product;
 use Maksym\MyShop\Product\ProductCategories;
 use Maksym\MyShop\Product\ProductCategory;
+use Maksym\MyShop\Product\Products;
 
-class ProductCategoryViewer implements CatalogVisitorInterface
+class ProductCategoryViewer extends AbstractCatalogVisitor
 {
     function visitProductCategoryHead(ProductCategory $productCategory) : void
     {
-        echo '<li><a href="category.php?ProductCategory=' . $productCategory->getId() . '">' . $productCategory->getLabel() . '</a>';
+        echo '<li><a href="category.php?ProductMode=0&ProductCategory=' . $productCategory->getId() . '">' . $productCategory->getLabel() . '</a>
+              <a href="category.php?ProductMode=1&ProductCategory=' . $productCategory->getId() . '" >(Продукты)</a>';
     }
 
     function visitProductCategoryTail(ProductCategory $productCategory): void
@@ -36,5 +39,25 @@ class ProductCategoryViewer implements CatalogVisitorInterface
     function visitCatalogTail(Catalog $catalog): void
     {
         echo '</ul>';
+    }
+
+    function visitProductHead(Product $product): void
+    {
+        echo '<li class="product">' . $product->getLabel();
+    }
+
+    function visitProductTail(Product $product): void
+    {
+        echo "</li>";
+    }
+
+    function visitProductsHead(Products $products): void
+    {
+        echo '<ul class="products-list">';
+    }
+
+    function visitProductsTail(Products $products): void
+    {
+        echo "</ul>";
     }
 }

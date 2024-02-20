@@ -2,6 +2,7 @@
 
 namespace Maksym\MyShop\Product;
 
+use Maksym\MyShop\Element\CatalogElementInterface;
 use Maksym\MyShop\Visitor\CatalogVisitorInterface;
 
 class ProductCategory extends AbstractProductCategoriesContainer
@@ -9,9 +10,14 @@ class ProductCategory extends AbstractProductCategoriesContainer
     public function __construct(
         private readonly int               $id,
         private readonly string            $label,
-        protected readonly ProductCategories $productCategories = new ProductCategories(),
+        private readonly ?CatalogElementInterface $subElementsContainer = new ProductCategories(),
     )
     {}
+
+    public function getSubElementsContainer(): CatalogElementInterface
+    {
+        return $this->subElementsContainer;
+    }
 
     public function getId(): int
     {
@@ -28,16 +34,21 @@ class ProductCategory extends AbstractProductCategoriesContainer
         $catalogVisitor->visitProductCategoryHead($this);
 
         if ($this->categoriesExists()) {
-            $this->productCategories->acceptHead($catalogVisitor);
+            $this->subElementsContainer->acceptHead($catalogVisitor);
         }
     }
 
     function acceptTail(CatalogVisitorInterface $catalogVisitor): void
     {
         if ($this->categoriesExists()) {
-            $this->productCategories->acceptTail($catalogVisitor);
+            $this->subElementsContainer->acceptTail($catalogVisitor);
         }
 
         $catalogVisitor->visitProductCategoryTail($this);
+    }
+
+    public function getElements(): array
+    {
+        return $this->subElementsContainer->getElements();
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Maksym\MyShop\Visitor;
 
+use Maksym\MyShop\Product\ProductCategories;
 use Maksym\MyShop\Product\ProductCategory;
+use Maksym\MyShop\Product\Products;
 
 class ProductCategoryFinder extends AbstractCatalogVisitor
 {
@@ -12,7 +14,7 @@ class ProductCategoryFinder extends AbstractCatalogVisitor
         private readonly int $id
     )
     {
-        $this->productCategory = new ProductCategory(0, 'Not found');
+        $this->productCategory = new ProductCategory(0, 'Not found', new ProductCategories());
     }
 
     function visitProductCategoryHead(ProductCategory $productCategory): void
