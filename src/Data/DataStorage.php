@@ -2,100 +2,92 @@
 
 namespace Maksym\MyShop\Data;
 
-use Maksym\MyShop\Element\CatalogElementInterface;
 use Maksym\MyShop\Product\Catalog;
 use Maksym\MyShop\Product\Product;
 use Maksym\MyShop\Product\ProductCategories;
 use Maksym\MyShop\Product\ProductCategory;
 use Maksym\MyShop\Product\Products;
 
+// File: DataStorage.php
 class DataStorage
 {
-    public function getData(): CatalogElementInterface
+    private function getData(String $file): array
     {
-        return new Catalog(
-            'Main catalog',
-            new ProductCategories(
-                [
-                    new ProductCategory(
-                        1,
-                        'Игрушки',
-                        new ProductCategories(),
-                    ),
-                    new ProductCategory(
-                        2,
-                        'Одежда',
-                        new ProductCategories(
-                            [
-                                new ProductCategory(
-                                    3,
-                                    'Зимняя одежда',
-                                    new ProductCategories(
-                                        [
-                                            new ProductCategory(4, 'Шубы', new ProductCategories(),),
-                                            new ProductCategory(5, 'Пальто', new ProductCategories(),)
-                                        ]
-                                    ),
-                                ),
-                                new ProductCategory(6,
-                                    'Летняя одежда',
-                                    new ProductCategories(),
-                                )
-                            ]
-                        ),
-                    ),
-                    new ProductCategory(
-                        7,
-                        'Питание',
-                        new ProductCategories(),
-                    )
-                ]
-            ),
-            'This is my first shop'
-        );
+        $jsonData = file_get_contents($file);
+        return json_decode($jsonData, true);
     }
 
-    public function getProducts(): CatalogElementInterface
+    public function buildCatalog(): Catalog
     {
-        return new Catalog(
-            'Main catalog',
-            new ProductCategories(
-                [
-                    new ProductCategory(
-                        1,
-                        'Игрушки',
-                        new Products([new Product(101, 'Юла'), new Product(102, 'Машина')]),
-                    ),
-                    new ProductCategory(
-                        2,
-                        'Одежда',
-                        new ProductCategories(
-                            [
-                                new ProductCategory(
-                                    3,
-                                    'Зимняя одежда',
-                                    new ProductCategories(
-                                        [
-                                            new ProductCategory(4, 'Шубы', new Products([new Product(105, 'Versace'), new Product(106, 'Gucci')]),),
-                                            new ProductCategory(5, 'Пальто', new Products([new Product(105, 'Vers'), new Product(106, 'Guc')]),)
-                                        ]
-                                    ),
-                                ),
-                                new ProductCategory(6,
-                                    'Летняя одежда',
-                                    new Products([new Product(105, 'Носки'), new Product(106, 'Трусы')]),
-                                )
-                            ]
-                        ),
-                    ),
-                    new ProductCategory(
-                        7,
-                        'Питание',
-                        new Products([new Product(107, 'Манка'), new Product(108, 'Перловка')]),
-                    )
-                ]
-            ),
-            'This is my first shop'
-        );
+        $arrayCatalog = $this->getData('catalog_data.json');
+
+        return new Catalog($arrayCatalog['title'],
+                           new ProductCategories($this->buildProductCategories($arrayCatalog['productCategories'])),
+                           $arrayCatalog['description']);
+    }
+
+    /**
+     * @param array $productCategories
+     * @return array<ProductCategory>
+     */
+    private function buildProductCategories(array $productCategories): array
+    {
+        $categories = [];
+
+        foreach ($productCategories as $productCategory) {
+
+            $categories[] = new ProductCategory(
+                $productCategory['id'],
+                $productCategory['label'],
+                new ProductCategories($this->buildProductCategories($productCategory['productCategories'])),
+            );
+        }
+        return $categories;
+    }
+
+    public function buildCatalogWithProducts(): Catalog
+    {
+        $arrayCatalog = $this->getData('catalog_data.json');
+
+        return new Catalog($arrayCatalog['title'],
+            new ProductCategories($this->buildProducts($arrayCatalog['productCategories'])),
+            $arrayCatalog['description']);
+    }
+    private function buildProducts(array $productCategories): array
+    {
+        $categories = [];
+
+        foreach ($productCategories as $productCategory) {
+
+            if ($productCategory['productCategories']) {
+                $categories[] = new ProductCategory(
+                    $productCategory['id'],
+                    $productCategory['label'],
+                    new ProductCategories($this->buildProductCategories($productCategory['productCategories'])),
+                );
+            } else {
+                $categories[] = new ProductCategory(
+                    $productCategory['id'],
+                    $productCategory['label'],
+                    new Products($this->buildProduct($productCategory['products'])),
+                );
+            }
+        }
+        return $categories;
+    }
+
+    /**
+     * @param array $productsData
+     * @return array<Product>
+     */
+    private function buildProduct(array $productsData): array
+    {
+        $products = [];
+
+        foreach ($productsData as $product) {
+            $products[] = new Product($product['id'], $product['label']);
+        }
+
+        return $products;
     }
 }

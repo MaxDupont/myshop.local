@@ -1,0 +1,62 @@
+{
+  "title": "Main catalog",
+  "productCategories": [
+    {
+      "id": 1,
+      "label": "Игрушки",
+      "productCategories": [],
+      "products": []
+    },
+    {
+      "id": 2,
+      "label": "Одежда",
+      "productCategories": [
+        {
+          "id": 3,
+          "label": "Зимняя одежда",
+          "productCategories": [
+            {
+              "id": 4,
+              "label": "Шубы",
+              "productCategories": [],
+              "products": [
+                {"id": 105, "label": "Versace"},
+                {"id": 106, "label": "Gucci"}
+              ]
+            },
+            {
+              "id": 5,
+              "label": "Пальто",
+              "productCategories": [],
+              "products": [
+                {"id": 105, "label": "Vers"},
+                {"id": 106, "label": "Guc"}
+              ]
+            }
+          ],
+          "products": []
+        },
+        {
+          "id": 6,
+          "label": "Летняя одежда",
+          "productCategories": [],
+          "products": [
+            {"id": 105, "label": "Носки"},
+            {"id": 106, "label": "Трусы"}
+          ]
+        }
+      ],
+      "products": []
+    },
+    {
+      "id": 7,
+      "label": "Питание",
+      "productCategories": [],
+      "products": [
+        {"id": 107, "label": "Манка"},
+        {"id": 108, "label": "Перловка"}
+      ]
+    }
+  ],
+  "description": "This is my first shop"
+}
