@@ -8,7 +8,7 @@ use Maksym\MyShop\Visitor\ProductCategoryViewer;
 require_once __DIR__ . "/vendor/autoload.php";
 
 $dataStorage = new DataStorage();
-$data = $_GET['ProductMode'] === '1' ? $dataStorage->getProducts() : $dataStorage->getData();
+$data = $_GET['ProductMode'] === '1' ? $dataStorage->buildCatalogWithProducts() : $dataStorage->buildCatalog();
 
 $productCategoryFinder = new ProductCategoryFinder($_GET['ProductCategory']);
 $recursiveIterator = new CatalogRecursiveIterator();

@@ -8,7 +8,7 @@ use Maksym\MyShop\Visitor\ProductCategoryViewer;
 require_once __DIR__ . "/vendor/autoload.php";
 
 $dataStorage = new DataStorage();
-$data = $dataStorage->getData();
+$data = $dataStorage->buildCatalog();
 
 $errorHandler = new ErrorHandler();
 $catalogViewer = new ProductCategoryViewer();
